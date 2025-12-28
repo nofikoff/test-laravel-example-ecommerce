@@ -41,6 +41,6 @@ class Product extends Model
 
     public function isLowStock(): bool
     {
-        return $this->stock_quantity < 5;
+        return $this->stock_quantity < config('shop.low_stock_threshold', 5);
     }
 }

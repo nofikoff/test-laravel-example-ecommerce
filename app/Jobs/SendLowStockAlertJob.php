@@ -24,7 +24,7 @@ class SendLowStockAlertJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to('admin@ecommerce.test')
+        Mail::to(config('shop.admin_email'))
             ->send(new LowStockAlert($this->product));
     }
 }

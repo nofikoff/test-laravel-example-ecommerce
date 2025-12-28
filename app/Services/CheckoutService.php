@@ -52,8 +52,9 @@ class CheckoutService
                 $product->decrement('stock_quantity', $item->quantity);
 
                 // Check for low stock after decrement
-                if ($product->fresh()->stock_quantity < 5 && $product->fresh()->stock_quantity >= 0) {
-                    $lowStockProducts[] = $product->fresh();
+                $freshProduct = $product->fresh();
+                if ($freshProduct->stock_quantity < config('shop.low_stock_threshold') && $freshProduct->stock_quantity >= 0) {
+                    $lowStockProducts[] = $freshProduct;
                 }
             }
 

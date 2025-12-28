@@ -43,7 +43,7 @@ class SendDailySalesReportCommand extends Command
         $this->info("Total orders: {$totalOrders}");
         $this->info("Total revenue: $" . number_format($totalRevenue, 2));
 
-        Mail::to('admin@ecommerce.test')
+        Mail::to(config('shop.admin_email'))
             ->send(new DailySalesReport(
                 date: $date,
                 totalOrders: $totalOrders,
