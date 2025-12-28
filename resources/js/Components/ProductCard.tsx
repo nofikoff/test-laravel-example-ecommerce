@@ -11,10 +11,15 @@ export default function ProductCard({ product }: ProductCardProps) {
     const { t } = useTranslation();
     const { auth } = usePage().props;
     const [isLoading, setIsLoading] = useState(false);
+    const [displayedStock, setDisplayedStock] = useState(product.stock_quantity);
 
     const handleAddToCart = () => {
         if (!auth.user) {
             router.visit(route('login'));
+            return;
+        }
+
+        if (displayedStock <= 0) {
             return;
         }
 
@@ -24,12 +29,15 @@ export default function ProductCard({ product }: ProductCardProps) {
             { product_id: product.id, quantity: 1 },
             {
                 preserveScroll: true,
+                onSuccess: () => {
+                    setDisplayedStock((prev) => Math.max(0, prev - 1));
+                },
                 onFinish: () => setIsLoading(false),
             }
         );
     };
 
-    const isOutOfStock = product.stock_quantity === 0;
+    const isOutOfStock = displayedStock === 0;
 
     return (
         <div className="overflow-hidden rounded-lg bg-white shadow-md transition-shadow hover:shadow-lg">
@@ -47,7 +55,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                         </span>
                     ) : (
                         <span className="text-sm text-gray-500">
-                            {product.stock_quantity} {t('products.inStock')}
+                            {displayedStock} {t('products.inStock')}
                         </span>
                     )}
                 </div>
