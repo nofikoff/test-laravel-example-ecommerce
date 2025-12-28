@@ -1,11 +1,13 @@
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { useTranslation } from '@/hooks/useTranslation';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function ForgotPassword({ status }: { status?: string }) {
+    const { t } = useTranslation();
     const { data, setData, post, processing, errors } = useForm({
         email: '',
     });
@@ -18,12 +20,9 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
     return (
         <GuestLayout>
-            <Head title="Forgot Password" />
+            <Head title={t('forgotPassword.title')} />
 
-            <div className="mb-4 text-sm text-gray-600">
-                Forgot your password? No problem. Just let us know your email address and we will
-                email you a password reset link that will allow you to choose a new one.
-            </div>
+            <div className="mb-4 text-sm text-gray-600">{t('forgotPassword.description')}</div>
 
             {status && <div className="mb-4 text-sm font-medium text-green-600">{status}</div>}
 
@@ -42,7 +41,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
                 <div className="mt-4 flex items-center justify-end">
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Email Password Reset Link
+                        {t('forgotPassword.submit')}
                     </PrimaryButton>
                 </div>
             </form>
