@@ -8,7 +8,7 @@ export default function CartIcon({ itemCount }: CartIconProps) {
     return (
         <Link
             href={route('cart.index')}
-            className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="relative p-2 text-gray-600 transition-colors hover:text-gray-900"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +26,7 @@ export default function CartIcon({ itemCount }: CartIconProps) {
             </svg>
 
             {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
                     {itemCount > 99 ? '99+' : itemCount}
                 </span>
             )}

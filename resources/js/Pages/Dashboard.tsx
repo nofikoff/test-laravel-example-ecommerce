@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import ProductGrid from '@/Components/ProductGrid';
 import CartSlideOver from '@/Components/CartSlideOver';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Head, usePage } from '@inertiajs/react';
 import { Cart, PageProps, Product } from '@/types';
 import { useState, useEffect } from 'react';
@@ -12,6 +13,7 @@ interface DashboardProps extends PageProps {
 }
 
 export default function Dashboard({ products, cart, cartItemCount }: DashboardProps) {
+    const { t } = useTranslation();
     const [isCartOpen, setIsCartOpen] = useState(false);
     const { flash } = usePage<PageProps>().props;
     const [showFlash, setShowFlash] = useState(false);
@@ -29,11 +31,11 @@ export default function Dashboard({ products, cart, cartItemCount }: DashboardPr
             header={
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        Products
+                        {t('products.title')}
                     </h2>
                     <button
                         onClick={() => setIsCartOpen(true)}
-                        className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                        className="relative p-2 text-gray-600 transition-colors hover:text-gray-900"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +52,7 @@ export default function Dashboard({ products, cart, cartItemCount }: DashboardPr
                             />
                         </svg>
                         {cartItemCount > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
                                 {cartItemCount > 99 ? '99+' : cartItemCount}
                             </span>
                         )}
@@ -58,10 +60,10 @@ export default function Dashboard({ products, cart, cartItemCount }: DashboardPr
                 </div>
             }
         >
-            <Head title="Products" />
+            <Head title={t('products.title')} />
 
             {showFlash && flash?.success && (
-                <div className="fixed top-4 right-4 z-50 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg">
+                <div className="fixed right-4 top-4 z-50 rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700 shadow-lg">
                     {flash.success}
                 </div>
             )}
@@ -72,11 +74,7 @@ export default function Dashboard({ products, cart, cartItemCount }: DashboardPr
                 </div>
             </div>
 
-            <CartSlideOver
-                cart={cart}
-                isOpen={isCartOpen}
-                onClose={() => setIsCartOpen(false)}
-            />
+            <CartSlideOver cart={cart} isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
         </AuthenticatedLayout>
     );
 }

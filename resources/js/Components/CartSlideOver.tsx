@@ -1,3 +1,4 @@
+import { useTranslation } from '@/hooks/useTranslation';
 import { Cart, CartItem as CartItemType } from '@/types';
 import { router } from '@inertiajs/react';
 import { Fragment, useState } from 'react';
@@ -11,6 +12,7 @@ interface CartSlideOverProps {
 }
 
 function CartItemRow({ item }: { item: CartItemType }) {
+    const { t } = useTranslation();
     const [isUpdating, setIsUpdating] = useState(false);
 
     const handleQuantityChange = (newQuantity: number) => {
@@ -34,11 +36,11 @@ function CartItemRow({ item }: { item: CartItemType }) {
     };
 
     return (
-        <div className={`flex items-center py-4 border-b ${isUpdating ? 'opacity-50' : ''}`}>
+        <div className={`flex items-center border-b py-4 ${isUpdating ? 'opacity-50' : ''}`}>
             <div className="flex-1">
                 <h4 className="font-medium text-gray-900">{item.product.name}</h4>
                 <p className="text-sm text-gray-500">
-                    ${Number(item.product.price).toFixed(2)} each
+                    ${Number(item.product.price).toFixed(2)} {t('cart.each')}
                 </p>
             </div>
 
@@ -78,16 +80,21 @@ function CartItemRow({ item }: { item: CartItemType }) {
 }
 
 export default function CartSlideOver({ cart, isOpen, onClose }: CartSlideOverProps) {
+    const { t } = useTranslation();
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
     const handleCheckout = () => {
         setIsCheckingOut(true);
-        router.post(route('checkout.store'), {}, {
-            onFinish: () => {
-                setIsCheckingOut(false);
-                onClose();
-            },
-        });
+        router.post(
+            route('checkout.store'),
+            {},
+            {
+                onFinish: () => {
+                    setIsCheckingOut(false);
+                    onClose();
+                },
+            }
+        );
     };
 
     const items = cart?.items || [];
@@ -122,16 +129,18 @@ export default function CartSlideOver({ cart, isOpen, onClose }: CartSlideOverPr
                             >
                                 <DialogPanel className="pointer-events-auto w-screen max-w-md">
                                     <div className="flex h-full flex-col bg-white shadow-xl">
-                                        <div className="flex items-center justify-between px-4 py-6 border-b">
+                                        <div className="flex items-center justify-between border-b px-4 py-6">
                                             <DialogTitle className="text-lg font-medium text-gray-900">
-                                                Shopping Cart
+                                                {t('cart.title')}
                                             </DialogTitle>
                                             <button
                                                 type="button"
                                                 className="text-gray-400 hover:text-gray-500"
                                                 onClick={onClose}
                                             >
-                                                <span className="sr-only">Close panel</span>
+                                                <span className="sr-only">
+                                                    {t('cart.closePanel')}
+                                                </span>
                                                 <svg
                                                     className="h-6 w-6"
                                                     fill="none"
@@ -150,8 +159,10 @@ export default function CartSlideOver({ cart, isOpen, onClose }: CartSlideOverPr
 
                                         <div className="flex-1 overflow-y-auto px-4">
                                             {items.length === 0 ? (
-                                                <div className="flex items-center justify-center h-full">
-                                                    <p className="text-gray-500">Your cart is empty</p>
+                                                <div className="flex h-full items-center justify-center">
+                                                    <p className="text-gray-500">
+                                                        {t('cart.empty')}
+                                                    </p>
                                                 </div>
                                             ) : (
                                                 <div>
@@ -164,9 +175,9 @@ export default function CartSlideOver({ cart, isOpen, onClose }: CartSlideOverPr
 
                                         {items.length > 0 && (
                                             <div className="border-t px-4 py-6">
-                                                <div className="flex items-center justify-between mb-4">
+                                                <div className="mb-4 flex items-center justify-between">
                                                     <span className="text-lg font-medium text-gray-900">
-                                                        Total
+                                                        {t('cart.total')}
                                                     </span>
                                                     <span className="text-lg font-bold text-gray-900">
                                                         ${total.toFixed(2)}
@@ -176,9 +187,11 @@ export default function CartSlideOver({ cart, isOpen, onClose }: CartSlideOverPr
                                                 <button
                                                     onClick={handleCheckout}
                                                     disabled={isCheckingOut}
-                                                    className="w-full bg-indigo-600 text-white py-3 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-75"
+                                                    className="w-full rounded-md bg-indigo-600 px-4 py-3 font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-75"
                                                 >
-                                                    {isCheckingOut ? 'Processing...' : 'Checkout'}
+                                                    {isCheckingOut
+                                                        ? t('common.processing')
+                                                        : t('cart.checkout')}
                                                 </button>
                                             </div>
                                         )}

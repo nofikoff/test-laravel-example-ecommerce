@@ -29,7 +29,7 @@ export default function QuantitySelector({
                 type="button"
                 onClick={handleDecrement}
                 disabled={disabled || quantity <= 1}
-                className="w-8 h-8 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
             >
                 -
             </button>
@@ -40,7 +40,7 @@ export default function QuantitySelector({
                 type="button"
                 onClick={handleIncrement}
                 disabled={disabled || quantity >= maxQuantity}
-                className="w-8 h-8 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
             >
                 +
             </button>
