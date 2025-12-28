@@ -23,9 +23,10 @@ class CartController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
+        $cart = $this->cartService->getCartWithItems($user);
 
         return Inertia::render('Cart', [
-            'cart' => new CartResource($this->cartService->getCartWithItems($user)),
+            'cart' => $cart ? new CartResource($cart) : null,
             'cartItemCount' => $this->cartService->getCartItemCount($user),
         ]);
     }

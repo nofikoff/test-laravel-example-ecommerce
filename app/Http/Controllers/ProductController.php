@@ -20,9 +20,11 @@ class ProductController extends Controller
     {
         $user = $request->user();
 
+        $cart = $user ? $this->cartService->getCartWithItems($user) : null;
+
         return Inertia::render('Dashboard', [
             'products' => ProductResource::collection(Product::ordered()->get()),
-            'cart' => $user ? new CartResource($this->cartService->getCartWithItems($user)) : null,
+            'cart' => $cart ? new CartResource($cart) : null,
             'cartItemCount' => $user ? $this->cartService->getCartItemCount($user) : 0,
         ]);
     }
