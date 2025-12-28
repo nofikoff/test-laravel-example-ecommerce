@@ -27,11 +27,7 @@ class CartItem extends Model
         'quantity',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    /** @return array<string, string> */
     protected function casts(): array
     {
         return [
@@ -39,31 +35,18 @@ class CartItem extends Model
         ];
     }
 
-    /**
-     * Get the cart that owns the item.
-     *
-     * @return BelongsTo<Cart, $this>
-     */
+    /** @return BelongsTo<Cart, $this> */
     public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class);
     }
 
-    /**
-     * Get the product for this cart item.
-     *
-     * @return BelongsTo<Product, $this>
-     */
+    /** @return BelongsTo<Product, $this> */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    /**
-     * Get the subtotal for this cart item.
-     *
-     * @return float
-     */
     public function getSubtotalAttribute(): float
     {
         return $this->product->price * $this->quantity;

@@ -2,44 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CartResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\CartService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-/**
- * Handles product catalog display.
- */
 class ProductController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @param  CartService  $cartService
-     */
     public function __construct(
-        private CartService $cartService
+        private readonly CartService $cartService
     ) {}
 
-    /**
-     * Display the product catalog.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
     public function index(Request $request): Response
     {
-        $products = Product::orderBy('name')->get();
-
         $user = $request->user();
-        $cart = $user ? $this->cartService->getCartWithItems($user) : null;
-        $cartItemCount = $user ? $this->cartService->getCartItemCount($user) : 0;
 
         return Inertia::render('Dashboard', [
-            'products' => $products,
-            'cart' => $cart,
-            'cartItemCount' => $cartItemCount,
+            'products' => ProductResource::collection(Product::ordered()->get()),
+            'cart' => $user ? new CartResource($this->cartService->getCartWithItems($user)) : null,
+            'cartItemCount' => $user ? $this->cartService->getCartItemCount($user) : 0,
         ]);
     }
 }

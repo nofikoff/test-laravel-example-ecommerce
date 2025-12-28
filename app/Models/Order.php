@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read User $user
  * @property-read \Illuminate\Database\Eloquent\Collection<int, OrderItem> $items
+ *
+ * @method static Builder<static> forDate(\Carbon\Carbon $date)
  */
 class Order extends Model
 {
@@ -25,11 +28,7 @@ class Order extends Model
         'total_amount',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    /** @return array<string, string> */
     protected function casts(): array
     {
         return [
@@ -37,23 +36,21 @@ class Order extends Model
         ];
     }
 
-    /**
-     * Get the user that placed the order.
-     *
-     * @return BelongsTo<User, $this>
-     */
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the items in the order.
-     *
-     * @return HasMany<OrderItem, $this>
-     */
+    /** @return HasMany<OrderItem, $this> */
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /** @param Builder<static> $query */
+    public function scopeForDate(Builder $query, \Carbon\Carbon $date): Builder
+    {
+        return $query->whereDate('created_at', $date);
     }
 }

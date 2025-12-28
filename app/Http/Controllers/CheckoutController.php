@@ -7,26 +7,12 @@ use App\Services\CheckoutService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * Handles checkout and order creation.
- */
 class CheckoutController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @param  CheckoutService  $checkoutService
-     */
     public function __construct(
-        private CheckoutService $checkoutService
+        private readonly CheckoutService $checkoutService
     ) {}
 
-    /**
-     * Process the checkout and create an order.
-     *
-     * @param  Request  $request
-     * @return RedirectResponse
-     */
     public function store(Request $request): RedirectResponse
     {
         try {

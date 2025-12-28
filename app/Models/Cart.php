@@ -25,43 +25,23 @@ class Cart extends Model
         'user_id',
     ];
 
-    /**
-     * Get the user that owns the cart.
-     *
-     * @return BelongsTo<User, $this>
-     */
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the items in the cart.
-     *
-     * @return HasMany<CartItem, $this>
-     */
+    /** @return HasMany<CartItem, $this> */
     public function items(): HasMany
     {
         return $this->hasMany(CartItem::class);
     }
 
-    /**
-     * Get the total price of all items in the cart.
-     *
-     * @return float
-     */
     public function getTotalAttribute(): float
     {
-        return $this->items->sum(function ($item) {
-            return $item->product->price * $item->quantity;
-        });
+        return $this->items->sum(fn (CartItem $item) => $item->subtotal);
     }
 
-    /**
-     * Get the total quantity of items in the cart.
-     *
-     * @return int
-     */
     public function getItemCountAttribute(): int
     {
         return $this->items->sum('quantity');

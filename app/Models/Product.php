@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,6 +16,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, CartItem> $cartItems
  * @property-read \Illuminate\Database\Eloquent\Collection<int, OrderItem> $orderItems
+ *
+ * @method static Builder<static> ordered()
+ * @method static Builder<static> inStock()
+ * @method static Builder<static> lowStock()
  */
 class Product extends Model
 {
@@ -26,11 +31,7 @@ class Product extends Model
         'stock_quantity',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    /** @return array<string, string> */
     protected function casts(): array
     {
         return [
@@ -39,43 +40,45 @@ class Product extends Model
         ];
     }
 
-    /**
-     * Get the cart items for the product.
-     *
-     * @return HasMany<CartItem, $this>
-     */
+    /** @return HasMany<CartItem, $this> */
     public function cartItems(): HasMany
     {
         return $this->hasMany(CartItem::class);
     }
 
-    /**
-     * Get the order items for the product.
-     *
-     * @return HasMany<OrderItem, $this>
-     */
+    /** @return HasMany<OrderItem, $this> */
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    /**
-     * Check if the product is in stock.
-     *
-     * @return bool
-     */
+    /** @param Builder<static> $query */
+    public function scopeOrdered(Builder $query): Builder
+    {
+        return $query->orderBy('name');
+    }
+
+    /** @param Builder<static> $query */
+    public function scopeInStock(Builder $query): Builder
+    {
+        return $query->where('stock_quantity', '>', 0);
+    }
+
+    /** @param Builder<static> $query */
+    public function scopeLowStock(Builder $query): Builder
+    {
+        return $query->where('stock_quantity', '<', config('shop.low_stock_threshold', 5))
+            ->where('stock_quantity', '>', 0);
+    }
+
     public function isInStock(): bool
     {
         return $this->stock_quantity > 0;
     }
 
-    /**
-     * Check if the product has low stock.
-     *
-     * @return bool
-     */
     public function isLowStock(): bool
     {
-        return $this->stock_quantity < config('shop.low_stock_threshold', 5);
+        return $this->stock_quantity > 0
+            && $this->stock_quantity < config('shop.low_stock_threshold', 5);
     }
 }
