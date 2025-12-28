@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Events\OrderPlaced;
 use App\Exceptions\InsufficientStockException;
 use App\Jobs\SendLowStockAlertJob;
+use App\Jobs\SendOrderConfirmationJob;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -73,6 +74,7 @@ class CheckoutService
                 SendLowStockAlertJob::dispatch($product);
             }
 
+            SendOrderConfirmationJob::dispatch($order);
             event(new OrderPlaced($order));
 
             return $order->load('items.product');

@@ -40,4 +40,18 @@ return [
         'no_orders' => 'No orders were placed today.',
     ],
 
+    // Order Confirmation
+    'order_confirmation' => [
+        'title' => 'Order Confirmation #:id',
+        'greeting' => 'Hello, :name!',
+        'intro' => 'Thank you for your order #:id. Here are your order details:',
+        'product' => 'Product',
+        'quantity' => 'Qty',
+        'price' => 'Price',
+        'subtotal' => 'Subtotal',
+        'total' => 'Total',
+        'thanks' => 'We appreciate your business and hope you enjoy your purchase!',
+        'regards' => 'Best regards',
+    ],
+
 ];

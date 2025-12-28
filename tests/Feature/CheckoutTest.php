@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Events\OrderPlaced;
 use App\Jobs\SendLowStockAlertJob;
+use App\Jobs\SendOrderConfirmationJob;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
@@ -194,5 +195,24 @@ class CheckoutTest extends TestCase
 
         $this->assertEquals(8, $product1->fresh()->stock_quantity);
         $this->assertEquals(12, $product2->fresh()->stock_quantity);
+    }
+
+    public function test_order_confirmation_email_is_dispatched(): void
+    {
+        Queue::fake();
+
+        $user = User::factory()->create();
+        $product = Product::factory()->create(['stock_quantity' => 10]);
+
+        $cart = Cart::create(['user_id' => $user->id]);
+        CartItem::create([
+            'cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 2,
+        ]);
+
+        $this->actingAs($user)->post(route('checkout.store'));
+
+        Queue::assertPushed(SendOrderConfirmationJob::class);
     }
 }
