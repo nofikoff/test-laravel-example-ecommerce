@@ -68,19 +68,19 @@ function CartItemRow({ item }: { item: CartItem }) {
     );
 }
 
-export default function Cart({ cart, cartItemCount }: CartPageProps) {
+export default function Cart({ cart, cartItemCount: _cartItemCount }: CartPageProps) {
     const { t } = useTranslation();
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const { flash } = usePage<PageProps>().props;
-    const [showFlash, setShowFlash] = useState(false);
+    const [flashVisible, setFlashVisible] = useState(true);
 
     useEffect(() => {
         if (flash?.success) {
-            setShowFlash(true);
-            const timer = setTimeout(() => setShowFlash(false), 3000);
+            setFlashVisible(true);
+            const timer = setTimeout(() => setFlashVisible(false), 3000);
             return () => clearTimeout(timer);
         }
-    }, [flash?.success]);
+    }, [flash]);
 
     const handleCheckout = () => {
         setIsCheckingOut(true);
@@ -106,7 +106,7 @@ export default function Cart({ cart, cartItemCount }: CartPageProps) {
         >
             <Head title={t('cart.title')} />
 
-            {showFlash && flash?.success && (
+            {flashVisible && flash?.success && (
                 <div className="fixed right-4 top-4 z-50 rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700 shadow-lg">
                     {flash.success}
                 </div>

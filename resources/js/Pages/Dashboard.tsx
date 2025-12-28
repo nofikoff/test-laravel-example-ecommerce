@@ -16,15 +16,15 @@ export default function Dashboard({ products, cart, cartItemCount }: DashboardPr
     const { t } = useTranslation();
     const [isCartOpen, setIsCartOpen] = useState(false);
     const { flash } = usePage<PageProps>().props;
-    const [showFlash, setShowFlash] = useState(false);
+    const [flashVisible, setFlashVisible] = useState(true);
 
     useEffect(() => {
         if (flash?.success) {
-            setShowFlash(true);
-            const timer = setTimeout(() => setShowFlash(false), 3000);
+            setFlashVisible(true);
+            const timer = setTimeout(() => setFlashVisible(false), 3000);
             return () => clearTimeout(timer);
         }
-    }, [flash?.success]);
+    }, [flash]);
 
     return (
         <AuthenticatedLayout
@@ -62,7 +62,7 @@ export default function Dashboard({ products, cart, cartItemCount }: DashboardPr
         >
             <Head title={t('products.title')} />
 
-            {showFlash && flash?.success && (
+            {flashVisible && flash?.success && (
                 <div className="fixed right-4 top-4 z-50 rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700 shadow-lg">
                     {flash.success}
                 </div>
