@@ -1,31 +1,31 @@
 <x-mail::message>
-# Daily Sales Report
+# {{ __('emails.daily_report.title') }}
 
-**Date:** {{ $date }}
+**{{ __('emails.daily_report.date') }}** {{ $date }}
 
-## Summary
+## {{ __('emails.daily_report.summary') }}
 
 <x-mail::table>
-| Metric | Value |
+| {{ __('emails.daily_report.metric') }} | {{ __('emails.daily_report.value') }} |
 |:-------|------:|
-| Total Orders | {{ $totalOrders }} |
-| Total Revenue | ${{ number_format($totalRevenue, 2) }} |
+| {{ __('emails.daily_report.total_orders') }} | {{ $totalOrders }} |
+| {{ __('emails.daily_report.total_revenue') }} | ${{ number_format($totalRevenue, 2) }} |
 </x-mail::table>
 
 @if($orders->count() > 0)
-## Orders
+## {{ __('emails.daily_report.orders') }}
 
 <x-mail::table>
-| Order ID | Customer | Total |
+| {{ __('emails.daily_report.order_id') }} | {{ __('emails.daily_report.customer') }} | {{ __('emails.daily_report.total') }} |
 |:---------|:---------|------:|
 @foreach($orders as $order)
 | #{{ $order->id }} | {{ $order->user->name }} | ${{ number_format($order->total_amount, 2) }} |
 @endforeach
 </x-mail::table>
 @else
-No orders were placed today.
+{{ __('emails.daily_report.no_orders') }}
 @endif
 
-Thanks,<br>
+{{ __('emails.thanks') }}<br>
 {{ config('app.name') }}
 </x-mail::message>

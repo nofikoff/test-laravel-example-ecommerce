@@ -26,7 +26,7 @@ class LowStockAlert extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Low Stock Alert: {$this->product->name}",
+            subject: __('emails.low_stock.title') . ': ' . $this->product->name,
         );
     }
 

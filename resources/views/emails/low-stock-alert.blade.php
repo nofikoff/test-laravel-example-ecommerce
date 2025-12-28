@@ -1,16 +1,16 @@
 <x-mail::message>
-# Low Stock Alert
+# {{ __('emails.low_stock.title') }}
 
-The following product is running low on stock and requires attention:
+{{ __('emails.low_stock.intro') }}
 
-**Product:** {{ $product->name }}
+**{{ __('emails.low_stock.product') }}** {{ $product->name }}
 
-**Current Stock:** {{ $product->stock_quantity }} units
+**{{ __('emails.low_stock.current_stock') }}** {{ $product->stock_quantity }} {{ __('emails.low_stock.units') }}
 
-**Price:** ${{ number_format($product->price, 2) }}
+**{{ __('emails.low_stock.price') }}** ${{ number_format($product->price, 2) }}
 
-Please restock this product soon to avoid stockouts.
+{{ __('emails.low_stock.action') }}
 
-Thanks,<br>
+{{ __('emails.thanks') }}<br>
 {{ config('app.name') }}
 </x-mail::message>
