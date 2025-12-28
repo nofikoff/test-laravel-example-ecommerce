@@ -8,12 +8,26 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * Handles product catalog display.
+ */
 class ProductController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @param  CartService  $cartService
+     */
     public function __construct(
         private CartService $cartService
     ) {}
 
+    /**
+     * Display the product catalog.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
     public function index(Request $request): Response
     {
         $products = Product::orderBy('name')->get();

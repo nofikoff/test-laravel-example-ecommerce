@@ -10,12 +10,32 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Service for processing checkout and creating orders.
+ */
 class CheckoutService
 {
+    /**
+     * Create a new service instance.
+     *
+     * @param  CartService  $cartService
+     */
     public function __construct(
         private CartService $cartService
     ) {}
 
+    /**
+     * Process checkout for a user.
+     *
+     * Creates an order from the user's cart, decrements product stock,
+     * dispatches low stock alerts if needed, and clears the cart.
+     *
+     * @param  User  $user
+     * @return Order
+     *
+     * @throws InsufficientStockException
+     * @throws \Exception
+     */
     public function processCheckout(User $user): Order
     {
         $cart = $this->cartService->getCartWithItems($user);
