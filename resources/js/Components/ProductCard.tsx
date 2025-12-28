@@ -1,6 +1,6 @@
 import { useTranslation } from '@/hooks/useTranslation';
 import { Product } from '@/types';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface ProductCardProps {
@@ -9,9 +9,15 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
     const { t } = useTranslation();
+    const { auth } = usePage().props;
     const [isLoading, setIsLoading] = useState(false);
 
     const handleAddToCart = () => {
+        if (!auth.user) {
+            router.visit(route('login'));
+            return;
+        }
+
         setIsLoading(true);
         router.post(
             route('cart.store'),

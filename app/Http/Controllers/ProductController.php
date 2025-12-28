@@ -18,8 +18,9 @@ class ProductController extends Controller
     {
         $products = Product::orderBy('name')->get();
 
-        $cart = $this->cartService->getCartWithItems($request->user());
-        $cartItemCount = $this->cartService->getCartItemCount($request->user());
+        $user = $request->user();
+        $cart = $user ? $this->cartService->getCartWithItems($user) : null;
+        $cartItemCount = $user ? $this->cartService->getCartItemCount($user) : 0;
 
         return Inertia::render('Dashboard', [
             'products' => $products,
