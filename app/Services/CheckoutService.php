@@ -52,9 +52,14 @@ class CheckoutService
                     'price' => $product->price,
                 ];
 
+                $stockBefore = $product->stock_quantity;
                 $product->decrement('stock_quantity', $item->quantity);
+                $stockAfter = $product->fresh()->stock_quantity;
 
-                if ($product->fresh()->isLowStock()) {
+                $threshold = config('shop.low_stock_threshold', 5);
+
+                // Only alert when crossing threshold (was >= threshold, now < threshold)
+                if ($stockBefore >= $threshold && $stockAfter < $threshold && $stockAfter > 0) {
                     $lowStockProducts[] = $product->fresh();
                 }
             }

@@ -115,7 +115,7 @@ class CheckoutTest extends TestCase
         Event::assertDispatched(OrderPlaced::class);
     }
 
-    public function test_low_stock_alert_job_is_dispatched_when_stock_below_5(): void
+    public function test_low_stock_alert_dispatched_when_crossing_threshold(): void
     {
         Queue::fake();
 
@@ -134,11 +134,11 @@ class CheckoutTest extends TestCase
 
         $this->actingAs($user)->post(route('checkout.store'));
 
-        // Stock is now 3, which is below 5
+        // Stock crossed threshold: 6 -> 3
         Queue::assertPushed(SendLowStockAlertJob::class);
     }
 
-    public function test_low_stock_alert_not_dispatched_when_stock_above_5(): void
+    public function test_low_stock_alert_not_dispatched_when_stock_remains_above_threshold(): void
     {
         Queue::fake();
 
@@ -157,7 +157,30 @@ class CheckoutTest extends TestCase
 
         $this->actingAs($user)->post(route('checkout.store'));
 
-        // Stock is now 15, which is above 5
+        // Stock remains above threshold: 20 -> 15
+        Queue::assertNotPushed(SendLowStockAlertJob::class);
+    }
+
+    public function test_low_stock_alert_not_dispatched_when_already_below_threshold(): void
+    {
+        Queue::fake();
+
+        $user = User::factory()->create();
+        $product = Product::factory()->create([
+            'stock_quantity' => 3,
+            'price' => 25.00,
+        ]);
+
+        $cart = Cart::create(['user_id' => $user->id]);
+        CartItem::create([
+            'cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+        ]);
+
+        $this->actingAs($user)->post(route('checkout.store'));
+
+        // Stock was already below threshold: 3 -> 2 (no duplicate alert)
         Queue::assertNotPushed(SendLowStockAlertJob::class);
     }
 
